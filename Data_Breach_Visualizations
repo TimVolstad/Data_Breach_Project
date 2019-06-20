@@ -1,0 +1,42 @@
+#Load Data ########################################################################
+
+#install.packages("Ecdat")
+library(Ecdat)
+data(breaches)
+
+#Check Data Characteristics and Descriptives ######################################################3
+dim(breaches)
+summary(breaches)
+sum <- summary(breaches)
+
+# Check the Number of Breaches per Year ############################################
+
+df <- breaches
+library(dplyr)
+Years <-  df %>% group_by(year) %>% summarise( Number_Of_Breaches = length(Name_of_Covered_Entity)) 
+
+library(ggplot2)
+library(scales)
+gg <- ggplot(Years, aes(x=year, y= Number_Of_Breaches)) +
+  geom_bar(stat="identity", fill="steelblue") +
+  scale_y_continuous() +
+  theme(axis.text.x = element_text(angle=90))+
+  ggtitle("Data Breaches per Year")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  xlab("Year") + ylab("Number of Breaches")
+
+plot(gg)
+
+# Check Number Affected Per year ###############################################################
+
+Affect <-  df %>% group_by(year) %>% summarise( Number_Of_Breaches = sum(Individuals_Affected)) 
+
+gg <- ggplot(Affect, aes(x=year, y= Number_Of_Breaches)) +
+  geom_bar(stat="identity", fill="red") +
+  scale_y_continuous("Number of People Affected by Breaches", labels = scales::comma) +
+  theme(axis.text.x = element_text(angle=90))+
+  ggtitle("Individuals Affected by Data Breaches per Year")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  scale_x_continuous("Year",  breaks = Years$year)
+
+plot(gg)
