@@ -1,0 +1,164 @@
+#Delete some variables
+breaches_3$X <- NULL
+breaches_3$X.1 <- NULL
+breaches_3$X.2 <- NULL
+breaches_3$X.3 <- NULL
+breaches_3$X.4 <- NULL
+#Data Preparation
+#Import Data
+help(read.csv)
+?read.csv
+data1<-read.csv(file.choose(), header=T)
+#To open the imported data
+breaches_3
+#Example, car_preference<-read.csv(file.choose(),header=T)
+#Check Dimentionality
+dim(breaches_3)
+#Variable names or column names
+names(breaches_3)
+#Structure 
+str(breaches_3)
+#Attributes
+attributes(breaches_3)
+#Get the first 5 rows
+breaches_3[2:5]
+#Get "Location of Breach Information" of the first 10 rows
+breaches_3[1:10, "Location_of_Breached_Information"]
+#Different ways to get "Location of Breach Information" of the first 10 rows
+breaches_3$Individuals_Affected[1:10]
+#Distribution of every variable
+summary(breaches_3)
+#Frequency 
+table(breaches_3$Type_of_Breach)
+#Variance of "Type of Breach"
+var(breaches_3$Type_of_Breach)
+#Covariance of two variables
+cov(breaches_3$Number, breaches_3$Individuals_Affected)
+#Correlation of two variables
+cor(breaches_3$Individuals_Affected, breaches_3$Number)
+
+
+#Histogram
+hist(breaches_3$Individuals_Affected)
+#Density
+plot(density(breaches_3$Individuals_Affected))
+plot(density(breaches_3$Number))
+#Scatter plot            
+plot(breaches_3$Number, breaches_3$Individuals_Affected)
+#Pair plot
+plot(breaches_3)
+head(breaches_3)
+tail(breaches_3)
+## draw a sample of 5 rows to retrieve sample randomly
+idx <- sample(1:nrow(breaches_3), 5)
+idx
+#We can also retrieve the values of a single column. For example, the first 10 values of rdur can be done in 3 ways.
+
+breaches_3[1:10, "Type_of_Breach"]
+table(breaches_3$Individuals_Affected)
+table(breaches_3$Type_of_Breach)
+pie(table(breaches_3$Individuals_Affected))
+pie(table(breaches_3$Type_of_Breach))
+pie(table(breaches_3$Location_of_Breached_Information))
+table(breaches_3$Location_of_Breached_Information)
+summary(Breach_3)
+quantile(breaches_3$Individuals_Affected)
+barplot(table(breaches_3$Individuals_Affected))
+barplot(table(breaches_3$Type_of_Breach))
+barplot(table(breaches_3$Location_of_Breached_Information))
+barplot(table(breaches_3$Number))
+barplot(table(Car_Preference$rdur))
+#Explore Multiple Variables
+cov(breaches_3[,1:4])
+cor(Car_Preference[,1:4])
+#Aggregation of given variable by each column
+aggregate(Individuals_Affected~ Type_of_Breach, summary, data=breaches_3)
+
+boxplot(Individuals_Affected~ Type_of_Breach, data=breaches_3, xlab="Individuals_Affected", ylab="Type_of_Breach")
+distMatrix <- as.matrix(dist(breaches_3[,1:4]))
+
+#understand the missing value pattern
+md.pattern(breaches_3)
+is.na(breaches_3)
+#sum and the percentage of missings in the dataset
+sum(is.na(breaches_3))
+# aggregate data frame 
+# for numeric variables
+attach(breaches_3)
+aggdata <-aggregate(breaches_3, by=list(Individuals_Affected,Type_of_Breach), 
+                    FUN=mean, na.rm=TRUE)
+print(aggdata)
+detach(breaches_3)
+
+
+boxplot(Individuals_Affected~ Type_of_Breach, data=breaches_3, xlab="Location_of_Breached_Information", ylab="Number")
+boxplot(ph~ gravity, data=Urine_Data, xlab="gravity", ylab="ph")
+boxplot(ph~ gravity, data=Urine_Data, xlab="ph", ylab="gravity")
+boxplot(ph~ gravity, data=Urine_Data, xlab="Cond", ylab="ph")
+boxplot(ph~ gravity, data=Urine_Data, xlab="calc", ylab="ph")
+boxplot(ph~ gravity, data=Urine_Data, xlab="urea", ylab="ph")
+
+
+
+
+#Run regresion 
+`breaches.(1)`
+#Model Using all the variables
+fn <- Individuals_Affected ~ Number + Type_of_Breach + Location_of_Breached_Information  
+out <- lm(fn, data = breaches_3)
+summary(out)
+out
+summary(out)
+#Matrix with fn
+mm <- model.matrix(fn,data = breaches_3)
+data.frame(mm[,55],breaches_3$Individuals_Affected)
+#Display specific Variable using level funtion
+breaches_3$Type_of_Breach <- relevel(breaches_3$Type_of_Breach,"Theft")
+levels(breaches_3$Type_of_Breach)
+#Deicision tree modeling
+#1st Grow tree by rpart(formula, data=, method=,control=) 
+#Classification tree with rpart
+library(rpart)
+#grow tree
+attach(breaches_3)
+fit <- rpart(Type_of_Breach ~  Individuals_Affected + Location_of_Breached_Information,
+             method="anova", data=Type_of_Breach)
+summary(fit)
+plot(fit)
+text(fit)
+#To make more pretty install some external package
+install.packages('rattle')
+install.packages('rpart.plot')
+install.packages('RColorBrewer')
+install.packages('fancyRpartPlot') 
+library(rattle)
+library(rpart.plot)
+library(RColorBrewer)
+
+install.packages('fancyRpartPlot')
+fancyRpartPlot(fit)
+RColorBrewer(fit)
+
+s<- sample(150,100)
+breach_train <- breaches_3[s,]
+library(rpart)
+#Create decision tree model
+dtm<- rpart(Type_of_Breach~Number + Individuals_Affected + Location_of_Breached_Information  )
+summary(breaches_3)
+dtm<- rpart(Type_of_Breach~., breach_train, method = "class")
+
+dtm
+plot(dtm)
+text(dtm)
+library(rpart.plot)
+library(rpart)
+rpart.plot(dtm)
+rpart.plot(dtm, type = 3, extra = 10)
+text(dtm, pretty = 0)
+#Prediction of decision tree
+p<-predict(dtm, breach_train[,4], type="class")
+
+table(breach_train[,4], p)
+p<-predict(dtm, breach_train, type="class")
+table(breach_train[,4], p)
+
