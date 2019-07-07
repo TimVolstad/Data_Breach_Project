@@ -1,0 +1,126 @@
+#import data
+library(readr)
+breaches <- read_csv("breaches.csv")
+View(breaches)
+
+#Data Exploration
+View(breaches)
+#Check Dimentionality
+dim(breaches)
+#Variable names or column names
+names(breaches)
+#Structure 
+str(breaches)
+#Attributes
+attributes(breaches)
+#Distribution of every variable
+summary(breaches)
+#Frequency 
+table(breaches$Type_of_Breach)
+
+## draw a sample of 5 rows to retrieve sample randomly
+idx <- sample(1:nrow(breaches), 5)
+idx
+##########################################
+## Pie Charts Showing types of Breaches ##
+##########################################
+pie(table(breaches$Type_of_Breach))
+pie(table(breaches$Location_of_Breached_Information))
+
+## More Stats
+quantile(breaches$Individuals_Affected)
+
+##############
+## Barplots ##
+##############
+barplot(table(breaches$Type_of_Breach))
+barplot(table(breaches$Location_of_Breached_Information))
+
+# Aggregation of given variable by each column
+aggregate(Individuals_Affected~ Type_of_Breach, summary, data=breaches)
+
+###############################
+## Boxplot of Type of Breach ##
+###############################
+boxplot(Individuals_Affected~ Type_of_Breach, data=breaches, xlab="Individuals_Affected", ylab="Type_of_Breach")
+
+#Distribution Matrix
+distMatrix <- as.matrix(dist(breaches[,1:4]))
+distMatrix
+
+#understand the missing value pattern
+md.pattern(breaches)
+is.na(breaches)
+#sum and the percentage of missings in the dataset
+sum(is.na(breaches))
+
+##############################################
+# aggregate data frame for numeric variables #
+##############################################
+attach(breaches)
+aggdata <-aggregate(breaches, by=list(Individuals_Affected,Type_of_Breach), 
+                    FUN=mean, na.rm=TRUE)
+print(aggdata)
+detach(breaches)
+
+#################################################
+#Run regresion - Model Using all the variables ##
+#################################################
+fn <- Individuals_Affected ~ Number + Type_of_Breach + Location_of_Breached_Information  
+out <- lm(fn, data = breaches)
+summary(out)
+out
+
+
+
+#############################
+## Deicision tree modeling ##
+#############################
+
+#1st Grow tree by rpart(formula, data=, method=,control=) 
+#Classification tree with rpart
+library(rpart)
+#grow tree
+attach(breaches)
+fit <- rpart(Type_of_Breach ~ Individuals_Affected + Location_of_Breached_Information, 
+             method="anova", data=Type_of_Breach)
+summary(fit)
+plot(fit)
+text(fit)
+
+#To make more pretty install some external package
+install.packages('rattle')
+install.packages('rpart.plot')
+install.packages('RColorBrewer')
+install.packages('fancyRpartPlot') 
+library(rattle)
+library(rpart.plot)
+library(RColorBrewer)
+
+install.packages('fancyRpartPlot')
+fancyRpartPlot(fit)
+RColorBrewer(fit)
+
+s<- sample(150,100)
+breach_train <- breaches[s,]
+library(rpart)
+#Create decision tree model
+dtm<- rpart(Type_of_Breach~Number + Individuals_Affected + Location_of_Breached_Information  )
+summary(breaches)
+dtm<- rpart(Type_of_Breach~., breach_train, method = "class")
+
+dtm
+plot(dtm)
+text(dtm)
+library(rpart.plot)
+library(rpart)
+rpart.plot(dtm)
+rpart.plot(dtm, type = 3, extra = 10)
+text(dtm, pretty = 0)
+#Prediction of decision tree
+p<-predict(dtm, breach_train[,4], type="class")
+
+table(breach_train[,4], p)
+p<-predict(dtm, breach_train, type="class")
+table(breach_train[,4], p)
+
