@@ -1,15 +1,18 @@
-#Load Data ########################################################################
+# Load Data #
+library(readr)
+breaches <- read_csv("breaches.csv")
+View(breaches)
 
-#install.packages("Ecdat")
+# install.packages("Ecdat")
 library(Ecdat)
 data(breaches)
 
-#Check Data Characteristics and Descriptives ######################################################3
+# Check Data Characteristics and Descriptives #
 dim(breaches)
 summary(breaches)
 sum <- summary(breaches)
 
-# Check the Number of Breaches per Year ############################################
+# Check the Number of Breaches per Year #
 
 df <- breaches
 library(dplyr)
@@ -17,6 +20,9 @@ Years <-  df %>% group_by(year) %>% summarise( Number_Of_Breaches = length(Name_
 
 library(ggplot2)
 library(scales)
+##############################################
+## Creating the Plot for Number of Breaches ##
+##############################################
 gg <- ggplot(Years, aes(x=year, y= Number_Of_Breaches)) +
   geom_bar(stat="identity", fill="steelblue") +
   scale_y_continuous() +
@@ -27,8 +33,9 @@ gg <- ggplot(Years, aes(x=year, y= Number_Of_Breaches)) +
 
 plot(gg)
 
-# Check Number Affected Per year ###############################################################
-
+###################################
+# Check Number Affected Per year ##
+###################################
 Affect <-  df %>% group_by(year) %>% summarise( Number_Of_Breaches = sum(Individuals_Affected)) 
 
 gg <- ggplot(Affect, aes(x=year, y= Number_Of_Breaches)) +
@@ -40,3 +47,4 @@ gg <- ggplot(Affect, aes(x=year, y= Number_Of_Breaches)) +
   scale_x_continuous("Year",  breaks = Years$year)
 
 plot(gg)
+
