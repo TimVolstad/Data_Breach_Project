@@ -5,6 +5,14 @@ Tim Volstad
 Seifu Tolesa
 Joeseph Schmit
 
+The R Script "Seifus code" is an exploratory analysis that also includes the predictive model. All one 
+needs to do to operate this code is import the dataset "Cyber Security Breaches" found here http://vincentarelbundock.github.io/Rdatasets/datasets.html.
+
+The "Data Breach Visualizations" R script provides the analyst with more context regarding how many breaches there 
+are per year. 
+
+Good Luck!
+
 The goal of this report is to shed light on the importance of cyber 
 security while attempting to predict on potential future attacks by highlighting 
 some of the most vulnerable industries and personal devices to cyber-attacks. 
@@ -21,5 +29,3 @@ with the intent to steal their information. However, these conclusions do not co
 their accuracy.
 
 
-
-Instructions for operating/viewing/running your visualization system
